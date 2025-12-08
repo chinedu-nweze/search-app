@@ -68,8 +68,10 @@ dependencies {
     implementation(libs.com.jakewharton.timber.timber)
 
     implementation(libs.io.coil.kt.coil3.coil.compose)
-    implementation(libs.io.coil.kt.coil3.coil.network )
-
+    //implementation(libs.io.coil.kt.coil3.coil.network )
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.4") // Only available on Android/JVM.
+    implementation("io.coil-kt.coil3:coil-network-ktor2:3.0.4")
+    implementation("io.coil-kt.coil3:coil-network-ktor3:3.0.4")
 
     implementation(libs.androidx.navigation.compose)
 

@@ -1,5 +1,6 @@
 package com.search.app.ui.view
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -86,7 +87,7 @@ fun CharacterDetailsScreenContent(
             AsyncImage(
                 modifier = Modifier.fillMaxSize(),
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(imageUrl)
+                    .data(Uri.parse(imageUrl))
                     .crossfade(true)
                     // 2. Add the listener callbacks
                     .listener(
