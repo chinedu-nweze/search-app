@@ -18,7 +18,7 @@ converter-kotlinx-serialization = "3.0.0"
 animationCore = "1.9.4"
 material3-version = "1.4.0"
 kotlinx-serialization-json = "1.7.3"
-coil-version = "3.3.0"
+coil-version = "3.0.0-alpha06"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -54,6 +54,7 @@ io-insert-koin-koin-androidx-startup = { group = "io.insert-koin", name = "koin-
 io-insert-koin-koin-android = { group = "io.insert-koin", name = "koin-android" }
 io-insert-koin-koin-test-junit4 = { group = "io.insert-koin", name = "koin-test-junit4" }
 io-coil-kt-coil3-coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil-version" }
+io-coil-kt-coil3-coil-network = { group = "io.coil-kt.coil3", name = "coil-network", version.ref = "coil-version" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

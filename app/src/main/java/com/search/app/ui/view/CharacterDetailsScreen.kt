@@ -1,14 +1,19 @@
 package com.search.app.ui.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,6 +27,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.search.app.R
 import org.koin.androidx.compose.koinViewModel
+import timber.log.Timber
 
 @Composable
 fun CharacterDetailsScreen(
@@ -60,10 +66,11 @@ fun CharacterDetailsScreenContent(
     type: String,
     created: String,
 ) {
+    var isLoadingImage by remember { mutableStateOf(false) }
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(color = Color.Blue)
+           // .background(color = Color.Blue)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -72,15 +79,39 @@ fun CharacterDetailsScreenContent(
             style = MaterialTheme.typography.titleLarge
         )
 
-        AsyncImage(
+        Box(
             modifier = Modifier.size(300.dp),
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(imageUrl)
-                .crossfade(true)
-                .build(),
+            contentAlignment = Alignment.Center
+        ) {
+            AsyncImage(
+                modifier = Modifier.fillMaxSize(),
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(imageUrl)
+                    .crossfade(true)
+                    // 2. Add the listener callbacks
+                    .listener(
+                        onStart = {
+                            Timber.d("Image download started")
+                            isLoadingImage = true
+                        },
+                        onSuccess = { _, result ->
+                            Timber.d("Image download successful. Source: ${result.dataSource}")
+                            isLoadingImage = false
+                        },
+                        onError = { _, result ->
+                            Timber.e(result.throwable, "Image download failed")
+                            isLoadingImage = false
+                        }
+                    )
+                    .build(),
+                contentDescription = stringResource(id = R.string.image_of_character, name)
+            )
 
-            contentDescription = stringResource(id = R.string.image_of_character, name)
-        )
+            // 3. Show a loading indicator while the image is downloading
+            if (isLoadingImage) {
+                CircularProgressIndicator()
+            }
+        }
 
         CharacterProperty(
             label = stringResource(id = R.string.species),

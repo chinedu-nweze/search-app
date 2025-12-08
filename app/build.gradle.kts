@@ -68,6 +68,8 @@ dependencies {
     implementation(libs.com.jakewharton.timber.timber)
 
     implementation(libs.io.coil.kt.coil3.coil.compose)
+    implementation(libs.io.coil.kt.coil3.coil.network )
+
 
     implementation(libs.androidx.navigation.compose)
 

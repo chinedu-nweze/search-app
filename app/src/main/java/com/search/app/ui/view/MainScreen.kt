@@ -47,43 +47,26 @@ fun MainScreen(
 ) {
     val navController = rememberNavController()
     val viewState by viewModel.viewState.collectAsStateWithLifecycle()
-    var searchQuery by remember { mutableStateOf("") }
-//    LaunchedEffect(searchQuery) {
-//        if (searchQuery.isNotEmpty()) {
-//            viewModel.getCharacter(searchQuery)
-//        }
-//    }
-
-    LaunchedEffect(Unit) {
-        viewModel.getCharacter("rick")
-    }
-
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentWindowInsets = WindowInsets.safeDrawing,
-        containerColor = Color.Transparent,
-        topBar = {
-            SearchBar(
-                query = searchQuery,
-                onQueryChanged = {
-                    searchQuery = it
-                },
-                modifier = modifier,
-            )
-        }
-
-    ) { innerPadding ->
+    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
         NavHost(
             navController = navController,
             startDestination = Route.CharacterScreen.route,
-            modifier = Modifier.padding(innerPadding)
+            modifier = modifier
         ) {
             composable(Route.CharacterScreen.route) {
                 Column(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxSize(),
                 ) {
+
+                    SearchBar(
+                        query = searchQuery,
+                        onQueryChanged = { newQuery ->
+                            viewModel.onSearchQueryChange(newQuery)
+                        },
+                        modifier = modifier,
+                    )
+
                     LazyColumn {
                         items(count = viewState.result.size) { index ->
                             val result = viewState.result[index]
@@ -95,8 +78,6 @@ fun MainScreen(
                             Timber.i("origin: ${result.origin.name}")
                             Timber.i("created: ${result.created}")
 
-
-
                             ListItem(
                                 headlineContent = {
                                     Text(
@@ -104,8 +85,7 @@ fun MainScreen(
                                         style = MaterialTheme.typography.bodyMedium,
                                     )
                                 },
-                                colors = ListItemDefaults
-                                    .colors(containerColor = Color.Transparent),
+
                                 modifier = Modifier
                                     .clickable {
                                         navController
@@ -140,6 +120,7 @@ fun MainScreen(
                 val created = backStackEntry.arguments?.getString("created") ?: ""
 
                 CharacterDetailsScreen(
+                    modifier = modifier,
                     name = name,
                     imageUrl = imageUrl,
                     species = species,
@@ -150,9 +131,7 @@ fun MainScreen(
                 )
             }
         }
-
     }
-}
 
 
 @Composable
@@ -160,12 +139,10 @@ fun SearchBar(
     query: String,
     onQueryChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
-    windowInsets: WindowInsets = WindowInsets(0, 160, 0, 0),
 ) {
     Box(
         modifier
             .fillMaxWidth()
-            .padding(windowInsets.asPaddingValues())
             .semantics { isTraversalGroup = true }
     ) {
         OutlinedTextField(
